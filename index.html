@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Build Your Empire</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- شاشة تسجيل الدخول -->
+  <div id="login-screen" class="screen">
+    <h1>Build Your Empire</h1>
+    <input type="text" id="email" placeholder="اسم المستخدم"><br>
+    <input type="password" id="password" placeholder="كلمة المرور"><br>
+    <button class="blue" onclick="login()">تسجيل دخول</button>
+    <button class="green" onclick="signup()">تسجيل جديد</button>
+    <button class="orange" onclick="playAsGuest()">اللعب كزائر</button>
+  </div>
+
+  <!-- شاشة اللعبة -->
+  <div id="game-screen" class="screen hidden">
+    <h2>مرحبًا، <span id="player-name"></span>!</h2>
+
+    <div id="resources">
+      الذهب: <span id="gold">0</span> | الطعام: <span id="food">0</span> | المانا: <span id="mana">0</span> <br>
+      <progress id="gold-progress" value="50" max="500"></progress>
+      <progress id="food-progress" value="30" max="500"></progress>
+      <progress id="mana-progress" value="0" max="200"></progress>
+    </div>
+
+    <div id="army">
+      <h3>الجيش</h3>
+      <div>
+        Skeleton: <span id="skeleton">0</span> | Spearman: <span id="spearman">0</span> | Soldier: <span id="soldier">0</span>
+      </div>
+      <div>
+        Thief: <span id="thief">0</span> | Archer: <span id="archer">0</span> | Assassin: <span id="assassin">0</span>
+      </div>
+      <div>
+        Knight: <span id="knight">0</span> | Healer: <span id="healer">0</span> | Mage: <span id="mage">0</span>
+      </div>
+      <div>
+        CavalryArcher: <span id="cavalryArcher">0</span> | Golem: <span id="golem">0</span> | Necromancer: <span id="necromancer">0</span>
+      </div>
+      <div>
+        Cannon: <span id="cannon">0</span> | Ballista: <span id="ballista">0</span> | Giant: <span id="giant">0</span>
+      </div>
+      <div>
+        Ninja: <span id="ninja">0</span> | Navy: <span id="navy">0</span> | Paladin: <span id="paladin">0</span>
+      </div>
+      <div>
+        Phoenix: <span id="phoenix">0</span> | Dragon: <span id="dragon">0</span> | Titan: <span id="titan">0</span>
+      </div>
+    </div>
+
+    <div id="actions">
+      <h3>تدريب الوحدات</h3>
+      <button class="green" onclick="trainUnit('skeleton')">تدريب هيكل عظمي</button>
+      <button class="green" onclick="trainUnit('spearman')">تدريب رماح</button>
+      <button class="green" onclick="trainUnit('soldier')">تدريب جندي</button>
+      <button class="green" onclick="trainUnit('thief')">تدريب لص</button>
+      <button class="green" onclick="trainUnit('archer')">تدريب رامٍ</button>
+      <button class="green" onclick="trainUnit('assassin')">تدريب قاتل</button>
+      <button class="green" onclick="trainUnit('knight')">تدريب فارس</button>
+      <button class="green" onclick="trainUnit('healer')">تدريب معالج</button>
+      <button class="green" onclick="trainUnit('mage')">تدريب ساحر</button>
+      <button class="green" onclick="trainUnit('cavalryArcher')">تدريب فارس رامٍ</button>
+      <button class="green" onclick="trainUnit('golem')">تدريب غولم</button>
+      <button class="green" onclick="trainUnit('necromancer')">تدريب مستحضر الأرواح</button>
+      <button class="green" onclick="trainUnit('cannon')">تدريب مدفع</button>
+      <button class="green" onclick="trainUnit('ballista')">تدريب مقلاع</button>
+      <button class="green" onclick="trainUnit('giant')">تدريب عملاق</button>
+      <button class="green" onclick="trainUnit('ninja')">تدريب نينجا</button>
+      <button class="green" onclick="trainUnit('navy')">تدريب بحري</button>
+      <button class="green" onclick="trainUnit('paladin')">تدريب فارس مقدس</button>
+      <button class="green" onclick="trainUnit('phoenix')">تدريب عنقاء</button>
+      <button class="green" onclick="trainUnit('dragon')">تدريب تنين</button>
+      <button class="green" onclick="trainUnit('titan')">تدريب تيتان</button>
+      <button class="red" onclick="attackEnemy()">هجوم على العدو</button>
+    </div>
+
+    <div id="attack-players">
+      <h3>الهجوم على لاعبين آخرين</h3>
+      <ul id="attack-list">
+        <li>جارٍ تحميل اللاعبين...</li>
+      </ul>
+    </div>
+
+    <div id="market">
+      <h3>سوق الموارد</h3>
+      <button class="blue" onclick="buyGold()">شراء 10 ذهب (-20 طعام)</button>
+      <button class="orange" onclick="sellGold()">بيع 10 ذهب (+15 طعام)</button>
+      <button class="blue" onclick="buyMana()">شراء 20 مانا (-30 ذهب)</button>
+      <button class="orange" onclick="sellMana()">بيع 20 مانا (+25 ذهب)</button>
+    </div>
+
+    <div id="buildings">
+      <h3>المباني</h3>
+      <button class="green" onclick="upgradeBuilding('goldMine')">منجم الذهب</button>
+      <button class="green" onclick="upgradeBuilding('farm')">المزرعة</button>
+      <button class="green" onclick="upgradeBuilding('mageTower')">برج السحرة</button>
+      <button class="green" onclick="upgradeBuilding('barracks')">الثكنة</button>
+      <button class="green" onclick="upgradeBuilding('archery')">الرماية</button>
+      <button class="green" onclick="upgradeBuilding('dock')">الميناء</button>
+      <!-- مباني جديدة -->
+      <button class="green" onclick="upgradeBuilding('blacksmith')">الحداد</button>
+      <button class="green" onclick="upgradeBuilding('workshop')">ورشة العمل</button>
+      <button class="green" onclick="upgradeBuilding('library')">المكتبة</button>
+    </div>
+
+    <div id="heroes">
+      <h3>الأبطال</h3>
+      <button class="green" onclick="unlockHero('arthur')">فتح Arthur (1000 ذهب)</button>
+      <button class="green" onclick="unlockHero('merlin')">فتح Merlin (1500 ذهب)</button>
+      <button class="green" onclick="unlockHero('lancelot')">فتح Lancelot (2000 ذهب)</button>
+      <button class="green" onclick="unlockHero('morgana')">فتح Morgana (3000 ذهب)</button>
+    </div>
+
+    <div id="spells">
+      <h3>التعاويذ</h3>
+      <button class="blue" onclick="castFireball()">Fireball (-150 مانا)</button>
+      <button class="green" onclick="castHeal()">Heal (-80 مانا)</button>
+      <button class="orange" onclick="castBoost()">Boost (-250 مانا)</button>
+    </div>
+
+    <div id="tasks">
+      <h3>المهام اليومية والأسبوعية</h3>
+      <ul id="task-list"></ul>
+    </div>
+
+    <div id="leaderboard">
+      <h3>Leaderboard</h3>
+      <ul id="leaderboard-list"></ul>
+    </div>
+
+    <button class="blue" onclick="logout()">تسجيل خروج</button>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+
+<footer style="text-align: center; margin-top: 20px; font-size: 14px; color: #c8c0c0;">
+  المبرمج محمود عصام و المبرمج ليث نسر
+</footer>
+</html>
